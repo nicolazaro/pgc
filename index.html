@@ -3,75 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Observatorio de Prospectiva - Latam</title>
+    <title>Observatorio de Prospectiva y GC - Latam</title>
+    <!-- Tailwind CSS para un diseño profesional y responsive -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons para una interfaz visual clara -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
-        .tab-active { background-color: white; color: #4f46e5; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 1px solid #e2e8f0; }
-        .row-hover:hover { background-color: #f8fafc; }
+        
+        /* Estilos personalizados para la navegación y tarjetas */
+        .tab-active { 
+            background-color: white; 
+            color: #4f46e5; 
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.1); 
+            border: 1px solid #e2e8f0; 
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
         .badge-investigador { background-color: #eef2ff; color: #4338ca; border: 1px solid #e0e7ff; }
         .badge-instituto { background-color: #ecfdf5; color: #065f46; border: 1px solid #d1fae5; }
         .badge-empresa { background-color: #fff7ed; color: #9a3412; border: 1px solid #ffedd5; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .row-animate { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
-<body class="text-slate-900">
+<body class="text-slate-900 antialiased">
 
-    <!-- Navegación -->
-    <nav class="sticky top-0 z-50 bg-white/70 backdrop-blur-md border-b border-slate-200">
+    <!-- Navegación Superior -->
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center gap-2">
-                    <div class="bg-indigo-600 p-1.5 rounded-lg shadow-lg shadow-indigo-200">
-                        <i data-lucide="compass" class="text-white w-5 h-5"></i>
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center gap-3">
+                    <div class="bg-indigo-600 p-2 rounded-xl shadow-lg shadow-indigo-200">
+                        <i data-lucide="compass" class="text-white w-6 h-6"></i>
                     </div>
-                    <span class="font-bold text-lg tracking-tight uppercase">Prospectiva<span class="text-indigo-600">.Data</span></span>
+                    <div>
+                        <span class="font-extrabold text-xl tracking-tight block leading-none">PROSPECTIVA</span>
+                        <span class="text-[10px] font-bold text-indigo-600 tracking-[0.3em] uppercase">Observatorio Latam</span>
+                    </div>
                 </div>
-                <div id="country-tabs" class="flex gap-1 bg-slate-100 p-1 rounded-full border border-slate-200 overflow-x-auto no-scrollbar">
-                    <!-- Botones de países inyectados -->
+                
+                <!-- Selector de Países (Scroll Horizontal en móvil) -->
+                <div id="country-tabs" class="flex gap-1 bg-slate-100/80 p-1.5 rounded-2xl border border-slate-200 overflow-x-auto no-scrollbar max-w-[50%] md:max-w-none">
+                    <!-- Botones generados por JS -->
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Header dinámico -->
-    <header class="bg-white border-b border-slate-200 py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
-                <div class="space-y-4">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-bold uppercase tracking-widest">
-                        <i data-lucide="map" class="w-3 h-3"></i> Investigación Granular en Curso
+    <!-- Header con Resumen Dinámico -->
+    <header class="bg-white border-b border-slate-200 py-20 relative overflow-hidden">
+        <div class="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-indigo-50 rounded-full blur-3xl opacity-50"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-10">
+                <div class="space-y-6 max-w-3xl">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold uppercase tracking-widest shadow-sm">
+                        <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Relevamiento Granular: <span id="label-country">...</span>
                     </div>
-                    <h1 id="country-title" class="text-5xl font-extrabold text-slate-900 tracking-tight">Cargando...</h1>
-                    <p id="country-desc" class="text-slate-500 max-w-2xl text-lg leading-relaxed">...</p>
+                    <h1 id="country-title" class="text-5xl md:text-6xl font-black text-slate-900 tracking-tight leading-tight">Cargando Datos...</h1>
+                    <p id="country-desc" class="text-xl text-slate-500 leading-relaxed font-medium">Estudiando los ecosistemas de futuros y gestión del conocimiento en la región.</p>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm text-center">
-                        <div id="count-total" class="text-4xl font-black text-indigo-600 leading-none">0</div>
-                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-3">Registros</div>
+                
+                <div class="flex gap-4 w-full md:w-auto">
+                    <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 flex-grow text-center min-w-[160px]">
+                        <div id="count-total" class="text-5xl font-black text-indigo-600 leading-none">0</div>
+                        <div class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-4">Registros</div>
                     </div>
-                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm text-center">
-                        <div id="count-inst" class="text-4xl font-black text-emerald-600 leading-none">0</div>
-                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-3">Nodos</div>
+                    <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 flex-grow text-center min-w-[160px]">
+                        <div id="count-inst" class="text-5xl font-black text-emerald-600 leading-none">0</div>
+                        <div class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-4">Nodos</div>
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         
-        <!-- Controles -->
-        <div class="mb-10 flex flex-col lg:flex-row gap-4">
-            <div class="relative flex-grow">
-                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
-                <input type="text" id="search-box" placeholder="Filtrar por nombre, entidad, ciudad o especialidad..." 
-                    class="w-full pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all shadow-sm text-sm">
+        <!-- Buscador y Filtros -->
+        <div class="mb-12 flex flex-col lg:flex-row gap-6">
+            <div class="relative flex-grow group">
+                <i data-lucide="search" class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors"></i>
+                <input type="text" id="search-box" placeholder="Buscar por nombre, entidad, ciudad o especialidad granular..." 
+                    class="w-full pl-14 pr-6 py-5 bg-white border border-slate-200 rounded-[1.5rem] focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all shadow-sm text-lg">
             </div>
-            <select id="filter-type" class="bg-white border border-slate-200 rounded-2xl px-6 py-4 text-sm font-semibold outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm cursor-pointer appearance-none">
+            <select id="filter-type" class="bg-white border border-slate-200 rounded-[1.5rem] px-8 py-5 text-sm font-bold outline-none focus:ring-4 focus:ring-indigo-500/10 cursor-pointer appearance-none shadow-sm">
                 <option value="todos">Todos los Tipos</option>
                 <option value="Investigador">Investigadores</option>
                 <option value="Instituto">Institutos / Grupos</option>
@@ -79,94 +101,117 @@
             </select>
         </div>
 
-        <!-- Tabla -->
-        <div class="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl shadow-slate-200/50 overflow-hidden overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-slate-50/80 text-slate-400 text-[10px] uppercase tracking-[0.2em] font-bold">
-                        <th class="px-8 py-6 border-b border-slate-100">Entidad</th>
-                        <th class="px-8 py-6 border-b border-slate-100">Referente</th>
-                        <th class="px-8 py-6 border-b border-slate-100">Especialidad Granular</th>
-                        <th class="px-8 py-6 border-b border-slate-100">Localización</th>
-                        <th class="px-8 py-6 border-b border-slate-100 text-center">Vínculo</th>
-                    </tr>
-                </thead>
-                <tbody id="data-body" class="divide-y divide-slate-100">
-                    <!-- Filas inyectadas -->
-                </tbody>
-            </table>
+        <!-- Tabla de Datos -->
+        <div class="bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl shadow-slate-200/60 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[1000px]">
+                    <thead>
+                        <tr class="bg-slate-50/80 text-slate-400 text-[11px] uppercase tracking-[0.25em] font-black">
+                            <th class="px-10 py-6 border-b border-slate-100">Entidad / Nodo</th>
+                            <th class="px-10 py-6 border-b border-slate-100">Referente Principal</th>
+                            <th class="px-10 py-6 border-b border-slate-100">Área Específica</th>
+                            <th class="px-10 py-6 border-b border-slate-100">Ciudad</th>
+                            <th class="px-10 py-6 border-b border-slate-100 text-center">Vínculo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="data-body" class="divide-y divide-slate-100">
+                        <!-- Generado dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
             
-            <div id="no-results" class="hidden py-32 text-center text-slate-400">
+            <div id="no-results" class="hidden py-40 text-center">
                 <div class="bg-slate-50 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <i data-lucide="database-zap" class="w-10 h-10 opacity-20"></i>
+                    <i data-lucide="database-zap" class="w-12 h-12 text-slate-300"></i>
                 </div>
-                <p class="text-xl font-medium text-slate-500">Sin coincidencias en la base de datos</p>
-                <button onclick="resetSearch()" class="mt-4 text-indigo-600 font-bold hover:underline">Reiniciar búsqueda</button>
+                <p class="text-xl font-bold text-slate-400 tracking-tight">Sin coincidencias en la base de datos de <span class="text-indigo-600" id="search-country-name">...</span></p>
+                <button onclick="resetSearch()" class="mt-4 text-indigo-600 font-extrabold hover:text-indigo-800 transition-colors">Limpiar filtros</button>
             </div>
         </div>
     </main>
 
-    <footer class="py-20 bg-slate-900 text-slate-500 text-center mt-20">
-        <div class="max-w-7xl mx-auto px-4">
-            <p class="text-[11px] uppercase tracking-[0.5em] font-black text-slate-700 mb-6 italic">Mapeo de Capital Intelectual Latam</p>
-            <div id="footer-country-chips" class="flex flex-wrap justify-center gap-8 text-slate-700">
-                <!-- Chips inyectados dinámicamente -->
+    <footer class="py-24 bg-slate-950 text-slate-500 mt-20">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-12">
+            <div class="flex justify-center gap-4 opacity-30">
+                <i data-lucide="brain-circuit" class="w-8 h-8"></i>
+                <i data-lucide="globe" class="w-8 h-8"></i>
+                <i data-lucide="line-chart" class="w-8 h-8"></i>
+            </div>
+            <div class="space-y-4">
+                <p class="text-[12px] uppercase tracking-[0.6em] font-black text-slate-600">Relevamiento Granular de Capital Intelectual</p>
+                <p class="max-w-2xl mx-auto text-sm leading-relaxed opacity-60 italic">
+                    "La mejor forma de gestionar el conocimiento es mapeando a quienes lo crean, lo transforman y lo proyectan hacia el futuro."
+                </p>
+            </div>
+            <div id="footer-country-chips" class="flex flex-wrap justify-center gap-6 text-slate-700">
+                <!-- Chips generados por JS -->
+            </div>
+            <div class="pt-12 border-t border-slate-900 text-[10px] font-bold uppercase tracking-widest text-slate-800">
+                Fase de Investigación Sudamérica 2024
             </div>
         </div>
     </footer>
 
     <script>
+        // --- BASE DE DATOS CENTRALIZADA (10 PAÍSES) ---
         const DB = {
             "Argentina": {
                 titulo: "Ecosistema Argentina",
                 desc: "Fuerte tradición en prospectiva agroalimentaria y regional, con redes universitarias y centros de posgrado de excelencia.",
                 registros: [
-                    { tipo: "Investigador", entidad: "UBA", apellido: "Patrouilleau", nombre: "M. Mercedes", area: "Planificación estratégica, Prospectiva agro", ciudad: "CABA", vinculo: "Academia", notas: "Coord. Académica PAEF" },
+                    { tipo: "Investigador", entidad: "UBA", apellido: "Patrouilleau", nombre: "M. Mercedes", area: "Prospectiva agroalimentaria", ciudad: "CABA", vinculo: "Academia", notas: "Coord. Académica PAEF" },
                     { tipo: "Investigador", entidad: "CEP Cuyo", apellido: "Ragno", nombre: "Luis", area: "Gestión del Conocimiento", ciudad: "Mendoza", vinculo: "Regional", notas: "Director CEP Cuyo" },
-                    { tipo: "Investigador", entidad: "UNCUYO", apellido: "Vitale", nombre: "Javier", area: "Prospectiva Territorial", ciudad: "Mendoza", vinculo: "Redes", notas: "WFSF Executive" }
+                    { tipo: "Investigador", entidad: "UNCUYO", apellido: "Vitale", nombre: "Javier", area: "Prospectiva Territorial", ciudad: "Mendoza", vinculo: "Redes", notas: "WFSF Executive" },
+                    { tipo: "Instituto", entidad: "CIECTI", apellido: "Porta", nombre: "Fernando", area: "Ciencia y Tecnología", ciudad: "CABA", vinculo: "Estado", notas: "Políticas públicas" }
                 ]
             },
             "Chile": {
                 titulo: "Ecosistema Chile",
-                desc: "Madurez notable en la vinculación de prospectiva con la administración local y el diseño de estrategias de Estado a largo plazo.",
+                desc: "Madurez en la vinculación de prospectiva con la administración local y el diseño de estrategias de Estado a largo plazo.",
                 registros: [
                     { tipo: "Investigador", entidad: "UTEM", apellido: "Aceituno", nombre: "Paola", area: "Prospectiva y Estrategia", ciudad: "Santiago", vinculo: "Academia", notas: "Referente Regional" },
-                    { tipo: "Investigador", entidad: "CChPE", apellido: "Casanueva", nombre: "Héctor", area: "Relaciones Internacionales", ciudad: "Santiago", vinculo: "Estado", notas: "Presidente Consejo" }
+                    { tipo: "Investigador", entidad: "CChPE", apellido: "Casanueva", nombre: "Héctor", area: "Relaciones Internacionales", ciudad: "Santiago", vinculo: "Estado", notas: "Presidente Consejo" },
+                    { tipo: "Empresa", entidad: "Fundación Chile", apellido: "-", nombre: "FCh", area: "Innovación y Prospectiva", ciudad: "Santiago", vinculo: "Privado", notas: "Transferencia Tecnológica" }
                 ]
             },
             "Uruguay": {
                 titulo: "Ecosistema Uruguay",
-                desc: "Modelo centralizado de prospectiva estatal a través de la OPP, con foco en transformación digital y capital humano.",
+                desc: "Modelo centralizado de prospectiva estatal a través de la OPP, con un enfoque moderno en transformación digital y capital humano.",
                 registros: [
-                    { tipo: "Instituto", entidad: "OPP", apellido: "-", nombre: "Uruguay", area: "Planificación Nacional", ciudad: "Montevideo", vinculo: "Estado", notas: "Presidencia" }
+                    { tipo: "Instituto", entidad: "OPP", apellido: "-", nombre: "Uruguay", area: "Planificación Nacional", ciudad: "Montevideo", vinculo: "Estado", notas: "Presidencia" },
+                    { tipo: "Instituto", entidad: "Plan Ceibal", apellido: "-", nombre: "Ceibal", area: "Gestión del Conocimiento", ciudad: "Montevideo", vinculo: "Educación", notas: "Innovación EdTech" }
                 ]
             },
             "Paraguay": {
                 titulo: "Ecosistema Paraguay",
                 desc: "Fase de institucionalización acelerada con fuerte vínculo entre planificación técnica (STP) y financiamiento científico (CONACYT).",
                 registros: [
-                    { tipo: "Instituto", entidad: "STP", apellido: "-", nombre: "Paraguay", area: "Plan Nacional de Desarrollo", ciudad: "Asunción", vinculo: "Estado", notas: "Secretaría Planificación" }
+                    { tipo: "Instituto", entidad: "STP", apellido: "-", nombre: "Paraguay", area: "Plan Nacional 2030", ciudad: "Asunción", vinculo: "Estado", notas: "Secretaría Planificación" },
+                    { tipo: "Instituto", entidad: "CONACYT", apellido: "-", nombre: "Paraguay", area: "Gestión de Ciencia", ciudad: "Asunción", vinculo: "Estado", notas: "Consejo Nal. Ciencia" }
                 ]
             },
             "Bolivia": {
                 titulo: "Ecosistema Bolivia",
                 desc: "Integración de prospectiva en la planificación del desarrollo económico y social bajo marcos estatales de largo plazo.",
                 registros: [
-                    { tipo: "Instituto", entidad: "MPD", apellido: "-", nombre: "Bolivia", area: "Planificación del Desarrollo", ciudad: "La Paz", vinculo: "Estado", notas: "Ministerio Planificación" }
+                    { tipo: "Instituto", entidad: "MPD", apellido: "-", nombre: "Bolivia", area: "Planificación del Desarrollo", ciudad: "La Paz", vinculo: "Estado", notas: "Ministerio Planificación" },
+                    { tipo: "Instituto", entidad: "INESAD", apellido: "-", nombre: "Bolivia", area: "Escenarios Sostenibles", ciudad: "La Paz", vinculo: "Privado", notas: "Think Tank de referencia" }
                 ]
             },
             "Perú": {
                 titulo: "Ecosistema Perú",
                 desc: "Liderazgo en prospectiva institucionalizada mediante el CEPLAN. Enfoque en la Visión 2050 y planeamiento estratégico regional.",
                 registros: [
-                    { tipo: "Instituto", entidad: "CEPLAN", apellido: "-", nombre: "Perú", area: "Centro Nacional de Planeamiento", ciudad: "Lima", vinculo: "Estado", notas: "Ente rector prospectiva" }
+                    { tipo: "Instituto", entidad: "CEPLAN", apellido: "-", nombre: "Perú", area: "Centro Nacional de Planeamiento", ciudad: "Lima", vinculo: "Estado", notas: "Ente rector prospectiva" },
+                    { tipo: "Investigador", entidad: "CEPLAN", apellido: "Vargas", nombre: "Fredy", area: "Prospectiva Estratégica", ciudad: "Lima", vinculo: "Estado", notas: "Especialista técnico" }
                 ]
             },
             "Ecuador": {
                 titulo: "Ecosistema Ecuador",
                 desc: "Foco en planificación del desarrollo y estudios de futuro vinculados a la educación superior y la soberanía técnica nacional.",
                 registros: [
-                    { tipo: "Instituto", entidad: "Planifica Ecuador", apellido: "-", nombre: "Ecuador", area: "Planificación Nacional", ciudad: "Quito", vinculo: "Estado", notas: "Ex-SENPLADES" }
+                    { tipo: "Instituto", entidad: "Planifica Ecuador", apellido: "-", nombre: "Ecuador", area: "Planificación Nacional", ciudad: "Quito", vinculo: "Estado", notas: "Ex-SENPLADES" },
+                    { tipo: "Investigador", entidad: "IAEN", apellido: "Ramírez", nombre: "Franklin", area: "Prospectiva Pública", ciudad: "Quito", vinculo: "Estado", notas: "U. Postgrado del Estado" }
                 ]
             },
             "Colombia": {
@@ -179,47 +224,61 @@
             },
             "Brasil": {
                 titulo: "Ecosistema Brasil",
-                desc: "Potencia regional con una infraestructura masiva de prospectiva. Destaca por su capacidad de prospectiva tecnológica (CGEE) y su activa comunidad de gestión del conocimiento (SBGC).",
+                desc: "Potencia regional con una infraestructura masiva. Destaca por su capacidad de prospectiva tecnológica (CGEE) y su activa comunidad de gestión del conocimiento (SBGC).",
                 registros: [
-                    { tipo: "Instituto", entidad: "CGEE", apellido: "-", nombre: "Brasil", area: "Gestión y Estudios Estratégicos", ciudad: "Brasília", vinculo: "Estado", notas: "Nodo central de prospectiva" },
-                    { tipo: "Investigador", entidad: "CGEE", apellido: "Cagnin", nombre: "Cristiano", area: "Sistemas de Innovación", ciudad: "Brasília", vinculo: "Estado", notas: "Especialista internacional" },
+                    { tipo: "Instituto", entidad: "CGEE", apellido: "-", nombre: "Brasil", area: "Gestión Estratégica CTI", ciudad: "Brasília", vinculo: "Estado", notas: "Nodo central regional" },
                     { tipo: "Instituto", entidad: "SBGC", apellido: "-", nombre: "Brasil", area: "Gestión del Conocimiento", ciudad: "São Paulo", vinculo: "Redes", notas: "Sociedad Profesional" },
-                    { tipo: "Instituto", entidad: "Embrapa", apellido: "-", nombre: "SIE", area: "Prospectiva Agropecuaria", ciudad: "Brasília", vinculo: "Estado", notas: "Inteligencia Estratégica" },
-                    { tipo: "Investigador", entidad: "Unicamp", apellido: "Santos", nombre: "Márcio de Miranda", area: "Estrategia CTI", ciudad: "Campinas", vinculo: "Academia", notas: "Ex-Director CGEE" },
-                    { tipo: "Investigador", entidad: "Ipea", apellido: "-", nombre: "Brasil", area: "Escenarios de Desarrollo", ciudad: "Rio de Janeiro", vinculo: "Estado", notas: "Pesquisa Económica Aplicada" },
-                    { tipo: "Empresa", entidad: "FDC", apellido: "-", nombre: "Dom Cabral", area: "Gestión Estratégica", ciudad: "Nova Lima", vinculo: "Privado", notas: "Escuela de Negocios" },
-                    { tipo: "Investigador", entidad: "UFRJ", apellido: "Cassiolato", nombre: "José Eduardo", area: "Sistemas de Innovación", ciudad: "Rio de Janeiro", vinculo: "Academia", notas: "Referente Globelics" }
+                    { tipo: "Instituto", entidad: "Embrapa", apellido: "-", nombre: "Brasil", area: "Prospectiva Agropecuaria", ciudad: "Brasília", vinculo: "Estado", notas: "Inteligencia Estratégica" }
+                ]
+            },
+            "Venezuela": {
+                titulo: "Ecosistema Venezuela",
+                desc: "Resiliencia académica en prospectiva y estrategia, con núcleos universitarios que mantienen la vigencia técnica y la conexión internacional.",
+                registros: [
+                    { tipo: "Instituto", entidad: "LUZ", apellido: "-", nombre: "CEPROS", area: "Centro de Estudios Prospectivos", ciudad: "Maracaibo", vinculo: "Academia", notas: "Universidad del Zulia" },
+                    { tipo: "Investigador", entidad: "LUZ", apellido: "Ordóñez", nombre: "Luis", area: "Prospectiva y Estrategia", ciudad: "Maracaibo", vinculo: "Academia", notas: "Referente RIBER" },
+                    { tipo: "Instituto", entidad: "UCV", apellido: "-", nombre: "Caracas", area: "Gestión del Conocimiento", ciudad: "Caracas", vinculo: "Academia", notas: "U. Central de Venezuela" }
                 ]
             }
         };
 
         let currentCountry = "Argentina";
 
-        function render() {
+        // Función de Renderizado Principal
+        function renderApp() {
             const data = DB[currentCountry];
+            
+            // Actualizar Textos
             document.getElementById('country-title').innerText = data.titulo;
             document.getElementById('country-desc').innerText = data.desc;
+            document.getElementById('label-country').innerText = currentCountry;
+            document.getElementById('search-country-name').innerText = currentCountry;
+
+            // Actualizar Estadísticas
             document.getElementById('count-total').innerText = data.registros.length;
             document.getElementById('count-inst').innerText = [...new Set(data.registros.map(r => r.entidad))].length;
 
-            const tabs = document.getElementById('country-tabs');
-            tabs.innerHTML = Object.keys(DB).map(p => `
-                <button onclick="setCountry('${p}')" class="px-6 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap ${p === currentCountry ? 'tab-active' : 'text-slate-400 hover:text-indigo-600'}">
-                    ${p}
+            // Renderizar Pestañas de Navegación
+            const tabsContainer = document.getElementById('country-tabs');
+            tabsContainer.innerHTML = Object.keys(DB).map(pais => `
+                <button onclick="setCountry('${pais}')" class="px-5 py-2.5 rounded-xl text-xs font-black transition-all whitespace-nowrap uppercase tracking-tighter ${pais === currentCountry ? 'tab-active' : 'text-slate-400 hover:text-indigo-600'}">
+                    ${pais}
                 </button>
             `).join('');
 
+            // Renderizar Footer Chips
             const footerChips = document.getElementById('footer-country-chips');
-            footerChips.innerHTML = Object.keys(DB).map(p => `
-                <div class="flex flex-col items-center">
-                    <span class="text-2xl font-bold text-slate-600">${p.substring(0,2).toUpperCase()}</span>
-                    <span class="text-[9px]">${p}</span>
+            footerChips.innerHTML = Object.keys(DB).map(pais => `
+                <div class="flex flex-col items-center group cursor-pointer" onclick="setCountry('${pais}')">
+                    <span class="text-3xl font-black text-slate-800 group-hover:text-indigo-600 transition-colors">${pais.substring(0,2).toUpperCase()}</span>
+                    <span class="text-[9px] font-bold uppercase tracking-widest text-slate-700">${pais}</span>
                 </div>
             `).join('');
 
             updateTable();
         }
 
+        // Función para Actualizar la Tabla con Filtros
         function updateTable() {
             const search = document.getElementById('search-box').value.toLowerCase();
             const filter = document.getElementById('filter-type').value;
@@ -227,8 +286,8 @@
             const noResults = document.getElementById('no-results');
 
             const filtered = DB[currentCountry].registros.filter(r => {
-                const searchStr = (r.apellido + r.nombre + r.entidad + r.area + r.ciudad + (r.notas || "")).toLowerCase();
-                const matchesSearch = searchStr.includes(search);
+                const searchString = (r.apellido + r.nombre + r.entidad + r.area + r.ciudad + (r.notas || "")).toLowerCase();
+                const matchesSearch = searchString.includes(search);
                 const matchesFilter = filter === 'todos' || r.tipo === filter;
                 return matchesSearch && matchesFilter;
             });
@@ -239,33 +298,39 @@
             } else {
                 noResults.classList.add('hidden');
                 body.innerHTML = filtered.map(r => `
-                    <tr class="row-hover transition-colors group">
-                        <td class="px-8 py-7">
-                            <div class="font-bold text-slate-800 text-sm">${r.entidad}</div>
-                            <span class="inline-block mt-1 px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-tighter badge-${r.tipo.toLowerCase()}">${r.tipo}</span>
+                    <tr class="row-hover transition-all group row-animate">
+                        <td class="px-10 py-8">
+                            <div class="font-extrabold text-slate-900 text-lg group-hover:text-indigo-600 transition-colors">${r.entidad}</div>
+                            <span class="inline-block mt-2 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter badge-${r.tipo.toLowerCase()}">${r.tipo}</span>
                         </td>
-                        <td class="px-8 py-7">
-                            <div class="font-semibold text-slate-900">${r.apellido}, ${r.nombre}</div>
-                            <div class="text-xs text-indigo-500 font-medium mt-0.5">${r.notas || ""}</div>
+                        <td class="px-10 py-8">
+                            <div class="font-bold text-slate-800">${r.apellido}, ${r.nombre}</div>
+                            <div class="text-xs text-indigo-500 font-bold mt-1 uppercase tracking-tight">${r.notas || "Referente"}</div>
                         </td>
-                        <td class="px-8 py-7 text-sm text-slate-500 font-medium leading-relaxed">${r.area}</td>
-                        <td class="px-8 py-7">
-                            <div class="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
-                                <i data-lucide="map-pin" class="w-3 h-3 text-indigo-300"></i> ${r.ciudad}
+                        <td class="px-10 py-8">
+                            <p class="text-sm text-slate-500 font-medium leading-relaxed max-w-xs">${r.area}</p>
+                        </td>
+                        <td class="px-10 py-8">
+                            <div class="flex items-center gap-2 text-xs text-slate-400 font-bold">
+                                <i data-lucide="map-pin" class="w-3.5 h-3.5 text-slate-300"></i> ${r.ciudad}
                             </div>
                         </td>
-                        <td class="px-8 py-7 text-center">
-                            <span class="text-[10px] font-bold text-slate-400 border border-slate-100 px-3 py-1 rounded-full group-hover:bg-slate-50 transition-colors">${r.vinculo}</span>
+                        <td class="px-10 py-8 text-center">
+                            <span class="text-[10px] font-black text-slate-400 border border-slate-200 px-4 py-1.5 rounded-full uppercase tracking-widest group-hover:bg-indigo-50 group-hover:text-indigo-600 group-hover:border-indigo-100 transition-all">${r.vinculo}</span>
                         </td>
                     </tr>
                 `).join('');
             }
+            // Reinicializar iconos de Lucide tras el render
             lucide.createIcons();
         }
 
-        function setCountry(p) {
-            currentCountry = p;
-            render();
+        // Helpers de Navegación
+        function setCountry(pais) {
+            currentCountry = pais;
+            document.getElementById('search-box').value = "";
+            renderApp();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function resetSearch() {
@@ -274,10 +339,12 @@
             updateTable();
         }
 
+        // Event Listeners
         document.getElementById('search-box').addEventListener('input', updateTable);
         document.getElementById('filter-type').addEventListener('change', updateTable);
 
-        window.onload = render;
+        // Inicialización
+        window.onload = renderApp;
     </script>
 </body>
 </html>
